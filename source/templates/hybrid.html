@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommender</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet'>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
+        MovieRec
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav ml-auto">
+            <a class="nav-item nav-link" href="{{ url_for('similar_movie') }}">Similar Movies</a>
+            <a class="nav-item nav-link" href="{{ url_for('collaborative') }}">Previous Rated</a>
+            <a class="nav-item nav-link" href="{{ url_for('hybrid') }}">Recommendations</a>
+            <a class="nav-item nav-link" href="{{ url_for('similar_poster') }}">Upload Poster</a>
+        </div>
+    </div>
+</nav>
+<hr>
+
+<main class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" action="/hybridRec">
+                <div class="form-group">
+                    <label for="user_id">Enter UserID:</label>
+                    <input type="number" id="user_id" name="user_id" class="form-control" placeholder="e.g., 1">
+                </div>
+                <button type="submit" class="btn btn-primary">Generate Recommendations</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        {% if movie1_details %}
+        <div class="table-responsive">
+            <table class="text-center table table-bordered table-striped">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Title</th>
+                    <th>{{ movie1_details.Title }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><b>Poster</b></td>
+                    <td><img width="200px" src="{{ movie1_details.Poster }}"></td>
+                </tr>
+                <tr>
+                    <td><b>Genre</b></td>
+                    <td>{{ movie1_details.Genre }}</td>
+                </tr>
+                <tr>
+                    <td><b>IMDB Rating</b></td>
+                    <td>{{ movie1_details.imdbRating }}</td>
+                </tr>
+                <tr>
+                    <td><b>Plot</b></td>
+                    <td>{{ movie1_details.Plot }}</td>
+                </tr>
+                <tr>
+                    <td><b>Year</b></td>
+                    <td>{{ movie1_details.Year }}</td>
+                </tr>
+                <tr>
+                    <td><b>Released</b></td>
+                    <td>{{ movie1_details.Released }}</td>
+                </tr>
+                <tr>
+                    <td><b>Runtime</b></td>
+                    <td>{{ movie1_details.Runtime }}</td>
+                </tr>
+                <tr>
+                    <td><b>Director</b></td>
+                    <td>{{ movie1_details.Director }}</td>
+                </tr>
+                <tr>
+                    <td><b>Writer</b></td>
+                    <td>{{ movie1_details.Writer }}</td>
+                </tr>
+                <tr>
+                    <td><b>Box Office</b></td>
+                    <td>{{ movie1_details.BoxOffice }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+
+    <div id="recommendations" class="mt-4">
+        {% if recommendations %}
+        <h2>Recommendations:</h2>
+        <div class="row">
+            {% for movie in recommendations %}
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="static/MLP-20M/{{movie[0]}}.jpg" alt="{{ movie[0] }} Poster" class="mx-auto card-img-top w-100 img-fluid" style="height: 300px;">
+                    <div class="text-center card-body">
+                        <h5 class="card-title"><a href="/details?selected_movie={{movie[1]}}">{{ movie[1][:20] }}{{ '...' if movie[1]|length > 20 }}</a></h5>
+                        <h6>Actual Rating: {{movie[2]}}</h6>
+                        <h6>Predicted Rating: {{movie[3]}}</h6>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</main>
+
+<!-- Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
